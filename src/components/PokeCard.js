@@ -1,5 +1,5 @@
 import React from "react"
-import { typeColors } from "./Functions"
+import { typeColors, titleCase } from "./Functions"
 
 export default function PokeCard({ pokemon }) {
   const image = pokemon.sprites.front_default
@@ -7,16 +7,6 @@ export default function PokeCard({ pokemon }) {
   const types = pokemon.types
   const id = ("00" + pokemon.id).slice(-3)
   const exp = pokemon.base_experience
-  
-  function titleCase(str) {
-    return str
-      .toLowerCase()
-      .split(" ")
-      .map(function (word) {
-        return word.charAt(0).toUpperCase() + word.slice(1)
-      })
-      .join(" ")
-  }
 
   return (
     <>
@@ -36,7 +26,7 @@ export default function PokeCard({ pokemon }) {
             {(() => {
               let temp = []
               types.forEach((element) => {
-                temp.push(typeColors(element));
+                temp.push(typeColors(element.type.name));
               })
               return temp
             })()}

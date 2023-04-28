@@ -1,7 +1,7 @@
 import PokeCard from "./PokeCard"
 import SearchBar from "./SearchBar"
 import PokeAPI from "../pokeapi.png"
-import { typeButtons, typeColors } from "./Functions"
+import { typeButtons } from "./Functions"
 import { useEffect, useState, useRef } from "react"
 
 let types = [
@@ -22,13 +22,16 @@ let types = [
   'Dark',
   'Dragon',
   'Steel',
-  'Fairy'
+  'Fairy',
+  'Reset'
 ]
 
 function App() {
   const [catalog, setCatalog] = useState([]);
   const [filtered, setFiltered] = useState([]);
   const [search, setSearch] = useState([]);
+  const [type, setTypeFilter] = useState("");
+  const resetCatalog = useRef();
   const searchRender = useRef();
   let temp = [];
   let i = 0;
@@ -55,20 +58,31 @@ function App() {
     })
   }
 
-  const filterType = (type) => {
-    let temp = catalog.filter(pokemon => type in pokemon.props.pokemon.types);
-    // setFiltered(temp);
-  }
-
   useEffect(() => {
     let value = searchRender.current.value.toLowerCase();
-    if (value === '' || value === ' '){
+    if (value === '' || value.trim() === ' '){
       setFiltered(catalog)
     } else {
       let temp = catalog.filter(components => components.props.pokemon.name.includes(value))
       setFiltered(temp);
     }
   }, [search])
+
+  useEffect(() => {
+    let newFilter = [];
+    if(type === "Reset"){
+      setFiltered(catalog);
+    } else {
+      catalog.forEach(pokemon => {
+        pokemon.props.pokemon.types.forEach((slot) => {
+          if (type.toLowerCase() === slot.type.name) {
+            newFilter.push(pokemon);
+          }
+        })
+      })
+      setFiltered(newFilter);
+    }
+  }, [type])
 
   return (
     <div className="min-w-screen font-pixel">
@@ -84,11 +98,11 @@ function App() {
         
       <div className="w-1/2 mx-auto my-4">
         <div>Filter By: </div>
-        <div>
+        <div className="flex flex-wrap">
           {(() => {
           let temp = [];
           types.forEach((elem) => {
-            temp.push(typeButtons(elem, filterType));
+            temp.push(typeButtons(elem, setTypeFilter, resetCatalog));
           })
           return temp;
           })()}
