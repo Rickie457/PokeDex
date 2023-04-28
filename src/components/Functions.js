@@ -122,7 +122,7 @@ export const typeColors = (el) => {
   }
 }
 
-export const typeButtons = (el, setFilterType, resetCatalog) => {
+export const typeButtons = (el, setFilterType) => {
   switch (el) {
     case "Fire":
       return (

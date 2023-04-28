@@ -37,7 +37,7 @@ function App() {
   let i = 0;
 
   useEffect(() => {
-    fetch('https://pokeapi.co/api/v2/pokemon?limit=150')
+    fetch('https://pokeapi.co/api/v2/pokemon?limit=811')
     .then(res => res.json())
     .then(json => {
       json.results.forEach((pokemon) => {
