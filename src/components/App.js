@@ -133,8 +133,7 @@ function App() {
         </div>
 
         <div className="w-4/6 flex flex-wrap justify-center align-center mx-auto my-0">
-          {console.log(filtered.length)}
-          {filtered.length ? (<div>Loading...</div>) : (filtered)}
+          {filtered}
         </div>
       </div> 
       )}
