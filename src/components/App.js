@@ -39,18 +39,17 @@ function App() {
   const [type, setTypeFilter] = useState("");
   const resetCatalog = useRef();
   const searchRender = useRef();
-  let temp = [];
 
   useEffect(() => {
     const fetchData = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=811');
+        const response = await fetch('https://pokeapi.co/api/v2/pokemon?limit=21');
         const jsonData = await response.json();
+        const pokeData = getAllPokeData(jsonData);
         
-        getAllPokeData(jsonData);
-        setCatalog(temp);
-        setFiltered(temp);
+        setCatalog(pokeData);
+        setFiltered(pokeData);
       } catch (err) {
         console.log('Error fetching data' + err);
       } finally {
@@ -61,18 +60,21 @@ function App() {
   }, []);
 
   const getAllPokeData = (jsonData) => {
-    return jsonData.results.forEach((pokemon) => {
-      fetchPokemonData(pokemon);
+    let temp = [];
+    jsonData.results.forEach(async(pokemon) => {
+      const data = await fetchPokemonData(pokemon.url);
+      temp.push(<PokeCard key={data.id} pokemon={data}/>);
     });
+    return temp;
   }
 
-  const fetchPokemonData = (pokemon) => {
-    let url = pokemon.url;
-    fetch(url)
-    .then(res => res.json())
-    .then(json => {
-      temp.push(<PokeCard pokemon={json}/>)
-    })
+  const fetchPokemonData = async (url) => {
+    try {
+      const res = await fetch(url);
+      return await res.json();
+    } catch (err) {
+      console.log("Error during individual Pokemon fetch" + err);
+    }
   }
 
   useEffect(() => {
@@ -133,7 +135,7 @@ function App() {
         </div>
 
         <div className="w-4/6 flex flex-wrap justify-center align-center mx-auto my-0">
-          {filtered}
+          {isLoading ? (<div>Loading...</div>) : filtered}
         </div>
       </div> 
       )}
