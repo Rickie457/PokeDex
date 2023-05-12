@@ -59,51 +59,42 @@ function App() {
     fetchData();
   }, []);
 
-  const getAllPokeData = (jsonData) => {
+  const getAllPokeData = (jsonData) => { 
     let temp = [];
     jsonData.results.forEach(async(pokemon) => {
-      const data = await fetchPokemonData(pokemon.url);
-      temp.push(<PokeCard key={data.id} pokemon={data}/>);
+      let id = pokemon.url.slice(-3).replace(/[^0-9]/g, '');
+      temp.push(<PokeCard key={id} pokemon={pokemon}/>);
     });
     return temp;
-  }
-
-  const fetchPokemonData = async (url) => {
-    try {
-      const res = await fetch(url);
-      return await res.json();
-    } catch (err) {
-      console.log("Error during individual Pokemon fetch" + err);
-    }
   }
 
   useEffect(() => {
     if(!isLoading){
       let value = searchRender.current.value;
-      if (value === '' || value.trim() === ' '){
+      if (value === ''){
         setFiltered(catalog)
       } else {
-        let temp = catalog.filter(components => components.props.pokemon.name.includes(value))
+        let temp = filtered.filter(components => components.props.pokemon.name.includes(value))
         setFiltered(temp);
       }
     }
   }, [search])
 
-  useEffect(() => {
-    let newFilter = [];
-    if(type === "Reset"){
-      setFiltered(catalog);
-    } else {
-      catalog.forEach(pokemon => {
-        pokemon.props.pokemon.types.forEach((slot) => {
-          if (type.toLowerCase() === slot.type.name) {
-            newFilter.push(pokemon);
-          }
-        })
-      })
-      setFiltered(newFilter);
-    }
-  }, [type])
+  // useEffect(() => {
+  //   let newFilter = [];
+  //   if(type === "Reset"){
+  //     setFiltered(catalog);
+  //   } else {
+  //     catalog.forEach(pokemon => {
+  //       pokemon.props.pokemon.types.forEach((slot) => {
+  //         if (type.toLowerCase() === slot.type.name) {
+  //           newFilter.push(pokemon);
+  //         }
+  //       })
+  //     })
+  //     setFiltered(newFilter);
+  //   }
+  // }, [type])
 
   return (
     <div>
